@@ -11,13 +11,15 @@ that will determine the score resulting of the interaction and record it in its 
 
 
 class Agent() :
-    def __init__(self, id, strategy):
+    def __init__(self, id : str, strategy):
         
         self.id = id # Unique identification for each player
         self.strategy = strategy # Players strategy (only predefined for now)
 
         self.interactions = {} # At first, the agent met no one. Then store each result of its interactions with other agent. (Only access to its own results)
         self.score = 0 # Null score at the beginning (consider starting with non null)
+
+        self.social_score = 0 # For later with altruist punition and social ranking
     
     def update_score(self, change : int) -> None :
         """ After an interaction with another agent, update its score 
@@ -48,3 +50,12 @@ class Agent() :
             str: "C" for cooperation or "B" for betrayal
         """
         pass
+    
+    def get_id(self) -> str :
+        return self.id
+    
+    def get_strategy(self) :
+        return self.strategy
+    
+    def get_interactions(self) -> dict :
+        return self.interactions
