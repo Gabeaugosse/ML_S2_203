@@ -9,9 +9,10 @@ that will determine the score resulting of the interaction and record it in its 
 
 """
 
+from strategies import Strategy
 
 class Agent() :
-    def __init__(self, id : str, strategy):
+    def __init__(self, id : str, strategy : Strategy):
         
         self.id = id # Unique identification for each player
         self.strategy = strategy # Players strategy (only predefined for now)
@@ -49,7 +50,7 @@ class Agent() :
         Returns:
             str: "C" for cooperation or "B" for betrayal
         """
-        pass
+        return self.strategy.choose_action(self.id, other_agent_id, self.interactions)
     
     def get_id(self) -> str :
         return self.id
