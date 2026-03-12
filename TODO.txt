@@ -7,4 +7,4 @@ Implémenation classe Game :
  - Algo de matching aléatoire à chaque tour
 
 Fichier stratégie :
- - Implémenter les première strats systématiques : Full coop, Full betrayal, Donnant-Donnant, Chasseur (coop et ensuite full trahison si trahi une fois)
+ - Implémenter les première strats systématiques : Donnant-Donnant, Chasseur (coop et ensuite full trahison si trahi une fois)
