@@ -15,7 +15,7 @@ class Agent() :
     def __init__(self, id : str, strategy : Strategy):
         
         self.id = id # Unique identification for each player
-        self.strategy = strategy # Players strategy (only predefined for now)
+        self.strategy = strategy() # Players strategy (only predefined for now)
 
         self.interactions = {} # At first, the agent met no one. Then store each result of its interactions with other agent. (Only access to its own results)
         self.score = 0 # Null score at the beginning (consider starting with non null)

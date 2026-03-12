@@ -12,8 +12,10 @@ class Strategy(ABC) :
 
 class AlwaysCooperate(Strategy) :
     def choose_action(self, my_id, other_player_id, interactions) -> str:
+        print(interactions)
         return "C"
 
 class AlwaysBetray(Strategy):
     def choose_action(self, my_id, other_player_id, interactions) -> str:
+        print(interactions)
         return "B"

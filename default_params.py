@@ -1,8 +1,10 @@
 GAIN_MATRIX = [[(3,3),(0,4)],
                [(4,0), (1,1)]]
 
-NUM_PLAYERS = 10
+ACTIONS_INDEX = {"C" : 0,
+                 "B" : 1}
+NUM_PLAYERS = 2
 
 Q_LEARNING_PROPORTION = 0.2
 
-NUM_TURNS = 100
+NUM_TURNS = 10
