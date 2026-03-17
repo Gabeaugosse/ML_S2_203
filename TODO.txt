@@ -6,7 +6,7 @@ Implémenation classe Game :
  - En fonction des params de proportion de chaque comportement, faire une fonction de creation des joueurs
 
 Fichier stratégie :
- - Implémenter les première strats systématiques : Donnant-Donnant, Chasseur (coop et ensuite full trahison si trahi une fois)
+ - Implémenter les première strats systématiques : Chasseur (coop et ensuite full trahison si trahi une fois)
 
- Fichier main :
- - Implémenter les arguments optionels argparse pour faciliter le lancement depuis terminal
+Inclure les sources dans un doc :
+ - https://plato.stanford.edu/entries/prisoner-dilemma/strategy-table.html
