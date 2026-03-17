@@ -5,6 +5,7 @@ ACTIONS_INDEX = {"C" : 0,
                  "B" : 1}
 NUM_PLAYERS = 2
 
+NUM_TURNS = 10
+
 Q_LEARNING_PROPORTION = 0.2
 
-NUM_TURNS = 10

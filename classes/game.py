@@ -4,9 +4,9 @@ from strategies import *
 import utils
 
 class Game() :
-    def __init__(self):
-        self.num_players = default_params.NUM_PLAYERS
-        self.num_turns = default_params.NUM_TURNS
+    def __init__(self, num_players, num_turns):
+        self.num_players = num_players
+        self.num_turns = num_turns
 
         self.logs = [] # History of all interactions among the game
         self.players = {i : Agent(i,AlwaysCooperate) for i in range(self.num_players)} # All agent in the game
@@ -22,7 +22,7 @@ class Game() :
         
         # Iterate through each players meetings
         for p1, p2 in zip(self.players_indexes, matching) :
-            print(f"Player {p1} will be facing player {p2}")
+            # print(f"Player {p1} will be facing player {p2}")
             
             # Instanciate each player into a variable
             player_1 = self.players[p1] 
@@ -31,15 +31,15 @@ class Game() :
             # Give the opponnent id to each player for them to choose their action
             first_player_action = player_1.choose_action(p2)
             second_player_action = player_2.choose_action(p1)
-            print(first_player_action, second_player_action)
+            # print(first_player_action, second_player_action)
 
             # Compute the outcome
             gains = default_params.GAIN_MATRIX[default_params.ACTIONS_INDEX[first_player_action]][default_params.ACTIONS_INDEX[second_player_action]]
-            print(gains)
+            # print(gains)
             player_1_gain = gains[0]
             player_2_gain = gains[1]
 
-            print(player_1_gain,player_2_gain)
+            # print(player_1_gain,player_2_gain)
             
             # Update the logs and players history
             player_1.update_interactions(p2, (first_player_action, second_player_action))
