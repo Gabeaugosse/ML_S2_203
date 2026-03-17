@@ -114,3 +114,15 @@ class DiscriminatingAltruist(Strategy):
 
     def __str__(self) -> str:
         return "DiscriminatingAltruist"
+    
+class Bully(Strategy):
+    def choose_action(self, my_id, other_player_id, interactions) -> str:
+        """Defects until opponent defects, then cooperates. Exploits overly accommodating strategies.
+        """
+        if other_player_id not in interactions or len(interactions[other_player_id]) == 0:
+            return "B"
+        last_opponent_action = interactions[other_player_id][-1]["opponent_action"]
+        return "C" if last_opponent_action == "B" else "B"
+
+    def __str__(self) -> str:
+        return "Bully"
