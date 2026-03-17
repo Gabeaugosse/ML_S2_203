@@ -101,3 +101,16 @@ class TwoTitsForTat(Strategy):
 
     def __str__(self) -> str:
         return "TwoTitsForTat"
+
+class DiscriminatingAltruist(Strategy):
+    def choose_action(self, my_id, other_player_id, interactions) -> str:
+        """In the Optional IPD, cooperates with any player that has never defected against it,
+        otherwise refuses to engage.
+        """
+        if other_player_id not in interactions or len(interactions[other_player_id]) == 0:
+            return "C"
+        ever_defected = any(r["opponent_action"] == "B" for r in interactions[other_player_id])
+        return "B" if ever_defected else "C"
+
+    def __str__(self) -> str:
+        return "DiscriminatingAltruist"
