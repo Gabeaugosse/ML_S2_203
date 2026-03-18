@@ -186,23 +186,23 @@ class Game() :
         m = self.compute_metrics()
 
         print("\n" + "="*55)
-        print("  RÉSULTATS DE LA SIMULATION")
+        print("  SIMULATION RESULTS")
         print("="*55)
 
-        print(f"\n🏆 Gagnant individuel : Agent {m['winner']['id']}")
-        print(f"   Stratégie  : {m['winner']['strategy']}")
-        print(f"   Score total: {m['winner']['total_score']}")
-        print(f"   Score moyen: {m['winner']['avg_score']} / interaction")
+        print(f"\n Individual winner : Agent {m['winner']['id']}")
+        print(f"   Strategy   : {m['winner']['strategy']}")
+        print(f"   Total score: {m['winner']['total_score']}")
+        print(f"   Avg score  : {m['winner']['avg_score']} / interaction")
 
-        print(f"\n🥇 Meilleure stratégie : {m['best_strategy']['name']}")
-        print(f"   Score moyen / agent : {m['best_strategy']['avg_score_per_agent']}")
-        print(f"   Taux coopération    : {m['best_strategy']['avg_coop_rate']:.1%}")
-        print(f"   Taux exploitation   : {m['best_strategy']['avg_exploit_rate']:.1%}")
+        print(f"\n Best strategy : {m['best_strategy']['name']}")
+        print(f"   Avg score / agent : {m['best_strategy']['avg_score_per_agent']}")
+        print(f"   Cooperation rate  : {m['best_strategy']['avg_coop_rate']:.1%}")
+        print(f"   Exploitation rate : {m['best_strategy']['avg_exploit_rate']:.1%}")
 
-        print("\n📊 Classement par stratégie :")
+        print("\n Strategy rankings :")
         ranked_strats = sorted(m["per_strategy"].items(),
                             key=lambda x: x[1]["avg_score_per_agent"], reverse=True)
-        print(f"  {'Stratégie':<25} {'Agents':>6} {'Score moy':>10} {'Coop':>7} {'Exploit':>8} {'Victimisé':>10} {'CC':>7}")
+        print(f"  {'Strategy':<25} {'Agents':>6} {'Avg score':>10} {'Coop':>7} {'Exploit':>8} {'Victimized':>10} {'Mut.C':>7}")
         print("  " + "-"*75)
         for name, s in ranked_strats:
             print(f"  {name:<25} {s['n_agents']:>6} {s['avg_score_per_agent']:>10.2f} "

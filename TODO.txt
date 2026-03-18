@@ -2,11 +2,5 @@ Implémentation de la classe Agent :
  - Faire une classe mère agent 
  - Definir deux sous classe d'agent pour ceux en QLearning et ceux en stratégie prédéfinie
 
-Implémenation classe Game :
- - En fonction des params de proportion de chaque comportement, faire une fonction de creation des joueurs
-
-Fichier stratégie :
- - Implémenter les première strats systématiques : Chasseur (coop et ensuite full trahison si trahi une fois)
-
 Inclure les sources dans un doc :
  - https://plato.stanford.edu/entries/prisoner-dilemma/strategy-table.html
