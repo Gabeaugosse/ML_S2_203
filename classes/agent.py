@@ -52,6 +52,9 @@ class Agent() :
         """
         return self.strategy.choose_action(self.id, other_agent_id, self.interactions)
     
+    def get_score(self) -> int:
+        return self.score
+    
     def get_id(self) -> str :
         return self.id
     

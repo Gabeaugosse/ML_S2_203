@@ -27,13 +27,13 @@ def main() :
     num_turns   = args.nb_turns   if args.nb_turns   is not None else default_params.NUM_TURNS
 
     strategy_mix = {
-    TitForTat:          0.00,
-    AlwaysCooperate:    0.5,
-    AlwaysBetray:       0.00,
-    RandomAction:       0.00,
-    Joss:               0.00,
-    Bully:              0.00,
-    TitForTwoTats:      0.5,
+    TitForTat:          1/7,
+    AlwaysCooperate:    1/7,
+    AlwaysBetray:       1/7,
+    RandomAction:       1/7,
+    Joss:               1/7,
+    Bully:              1/7,
+    TitForTwoTats:      1/7,
 }
     # Play the game
     print(f"\nSimulation with {num_players} players who will play against each other {num_turns} times !\n")
