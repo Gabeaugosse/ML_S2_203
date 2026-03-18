@@ -4,3 +4,5 @@ Implémentation de la classe Agent :
 
 Inclure les sources dans un doc :
  - https://plato.stanford.edu/entries/prisoner-dilemma/strategy-table.html
+
+Implémentation des outputs à mettre dans le rapport
