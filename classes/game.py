@@ -24,11 +24,11 @@ class Game() :
             """
             assert abs(sum(strategy_mix.values()) - 1.0) < 1e-6, "Proportion must sum to 1 !!"
 
-            # Calcul des effectifs bruts
+            # Raw effective per mix
             raw_counts = {s: p * self.num_players for s, p in strategy_mix.items()}
             floor_counts = {s: math.floor(c) for s, c in raw_counts.items()}
 
-            # Distribution du reste
+            # Rest is distributed
             remainder = self.num_players - sum(floor_counts.values())
             sorted_by_remainder = sorted(strategy_mix.keys(),
                                         key=lambda s: raw_counts[s] - floor_counts[s],
@@ -36,7 +36,7 @@ class Game() :
             for i in range(remainder):
                 floor_counts[sorted_by_remainder[i]] += 1
 
-            # Instanciation des agents
+            # Create agents
             players = {}
             idx = 0
             for strategy, count in floor_counts.items():
@@ -111,27 +111,27 @@ class Game() :
             coop_rate_self = all_my_actions.count("C")  / n if n > 0 else 0
             coop_rate_opp  = all_opp_actions.count("C") / n if n > 0 else 0
 
-            # Taux d'exploitation : j'ai trahi pendant que l'autre coopérait
+            # Exploit rate means I defect when the other cooperates
             exploit_rate = sum(
                 1 for a, b in zip(all_my_actions, all_opp_actions) if a == "B" and b == "C"
             ) / n if n > 0 else 0
 
-            # Taux de victimisation : l'autre a trahi pendant que je coopérais
+            # Invert of exploit, I coop when the other defect
             victimized_rate = sum(
                 1 for a, b in zip(all_my_actions, all_opp_actions) if a == "C" and b == "B"
             ) / n if n > 0 else 0
 
-            # Taux de coopération mutuelle (outcome CC)
+            # Mutual coop (C,C)
             mutual_coop_rate = sum(
                 1 for a, b in zip(all_my_actions, all_opp_actions) if a == "C" and b == "C"
             ) / n if n > 0 else 0
 
-            # Taux de trahison mutuelle (outcome BB)
+            #Mutual betrayal (B,B)
             mutual_betray_rate = sum(
                 1 for a, b in zip(all_my_actions, all_opp_actions) if a == "B" and b == "B"
             ) / n if n > 0 else 0
 
-            # Score moyen par interaction
+            # Mean score per interaction
             avg_score = agent.score / n if n > 0 else 0
 
             stats[pid] = {
@@ -147,11 +147,11 @@ class Game() :
                 "victimized_rate"   : round(victimized_rate, 4),
             }
 
-        # --- Classement global ---
+        # Global ranking
         ranked = sorted(stats.items(), key=lambda x: x[1]["total_score"], reverse=True)
         winner_id, winner_stats = ranked[0]
 
-        # --- Agrégation par stratégie ---
+        # Agg per strat
         strategy_groups = {}
         for pid, s in stats.items():
             name = s["strategy"]
