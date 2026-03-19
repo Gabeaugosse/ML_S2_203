@@ -78,7 +78,7 @@ class Game() :
         # Give the opponnent id to each player for them to choose their action
         first_player_action = player_1.choose_action(p2_id)
         second_player_action = player_2.choose_action(p1_id)
-        print(first_player_action, second_player_action)
+
 
         # Compute the outcome
         gains = default_params.GAIN_MATRIX[default_params.ACTIONS_INDEX[first_player_action]][default_params.ACTIONS_INDEX[second_player_action]]
