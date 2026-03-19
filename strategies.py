@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import random
 import default_params
+from collections import defaultdict
 
 class Strategy(ABC):
     """ Common interface for predefined strategies. (Like interface in Java)
@@ -12,6 +13,10 @@ class Strategy(ABC):
 
     @abstractmethod
     def __str__(self) -> str:
+        pass
+
+    def update_Q(self, other_player_id: str, my_action: str, opp_action: str, reward: int) -> None:
+        """Update Q-table for learning strategies. Default does nothing."""
         pass
 
 
@@ -140,3 +145,55 @@ class Joss(Strategy):
 
     def __str__(self) -> str:
         return f"Joss(p_betray={default_params.JOSS_P})"
+
+
+class QLearningStrategy(Strategy):
+    def __init__(self, alpha=0.1, gamma=0.9, epsilon=0.1):
+        self.alpha = alpha  # Learning rate
+        self.gamma = gamma  # Discount factor
+        self.epsilon = epsilon  # Exploration rate
+        self.q_table = defaultdict(float)  # Q-table: (state, action) -> value
+        self.last_state_action = {}  # Store last (state, action) per opponent
+
+    def _get_state(self, interactions, other_player_id):
+        """Get current state based on opponent's last 2 actions."""
+        if other_player_id not in interactions or len(interactions[other_player_id]) == 0:
+            return ()  # No history
+        opp_actions = [r["opponent_action"] for r in interactions[other_player_id]]
+        return tuple(opp_actions[-2:])  # Last 2 actions
+
+    def choose_action(self, my_id, other_player_id, interactions) -> str:
+        state = self._get_state(interactions, other_player_id)
+        actions = ["C", "B"]
+        
+        # Epsilon-greedy
+        if random.random() < self.epsilon:
+            action = random.choice(actions)
+        else:
+            q_values = [self.q_table[(state, a)] for a in actions]
+            max_q = max(q_values)
+            # If tie, choose randomly among max
+            best_actions = [a for a, q in zip(actions, q_values) if q == max_q]
+            action = random.choice(best_actions)
+        
+        # Store for update
+        self.last_state_action[other_player_id] = (state, action)
+        return action
+
+    def update_Q(self, other_player_id: str, my_action: str, opp_action: str, reward: int) -> None:
+        if other_player_id not in self.last_state_action:
+            return
+        old_state, action_taken = self.last_state_action[other_player_id]
+        new_state = (old_state[1:] if len(old_state) == 2 else old_state) + (opp_action,)
+        if len(new_state) > 2:
+            new_state = new_state[-2:]
+        new_state = tuple(new_state)
+        
+        # Q-learning update
+        old_q = self.q_table[(old_state, action_taken)]
+        max_next_q = max([self.q_table[(new_state, a)] for a in ["C", "B"]]) if new_state else 0
+        new_q = old_q + self.alpha * (reward + self.gamma * max_next_q - old_q)
+        self.q_table[(old_state, action_taken)] = new_q
+
+    def __str__(self) -> str:
+        return f"QLearningStrategy(alpha={self.alpha}, gamma={self.gamma}, epsilon={self.epsilon})"

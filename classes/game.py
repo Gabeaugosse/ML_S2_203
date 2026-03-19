@@ -72,7 +72,7 @@ class Game() :
         # Give the opponnent id to each player for them to choose their action
         first_player_action = player_1.choose_action(p2_id)
         second_player_action = player_2.choose_action(p1_id)
-        # print(first_player_action, second_player_action)
+        print(first_player_action, second_player_action)
 
         # Compute the outcome
         gains = default_params.GAIN_MATRIX[default_params.ACTIONS_INDEX[first_player_action]][default_params.ACTIONS_INDEX[second_player_action]]
@@ -91,7 +91,12 @@ class Game() :
                                             "opponent_action" : second_player_action})
         player_2.update_interactions(p1_id, {"player_action" : second_player_action, 
                                             "opponent_action" : first_player_action})
-            
+        
+        # Update Q-learning if applicable
+        if hasattr(player_1.get_strategy(), 'update_Q'):
+            player_1.get_strategy().update_Q(p2_id, first_player_action, second_player_action, player_1_gain)
+        if hasattr(player_2.get_strategy(), 'update_Q'):
+            player_2.get_strategy().update_Q(p1_id, second_player_action, first_player_action, player_2_gain)
 
         
     def compute_metrics(self) -> dict:
@@ -101,7 +106,7 @@ class Game() :
         stats = {}
 
         for pid, agent in self.players.items():
-            total_interactions = sum(len(v) for v in agent.interactions.items())
+            # total_interactions = sum(len(v) for v in agent.interactions.items())
             
             all_my_actions    = [r["player_action"]   for hist in agent.interactions.values() for r in hist]
             all_opp_actions   = [r["opponent_action"]  for hist in agent.interactions.values() for r in hist]
@@ -135,8 +140,8 @@ class Game() :
             avg_score = agent.score / n if n > 0 else 0
 
             stats[pid] = {
-                "strategy"          : str(agent.strategy),
-                "total_score"       : agent.score,
+                "strategy"          : str(agent.get_strategy()),
+                "total_score"       : agent.get_score(),
                 "avg_score"         : round(avg_score, 4),
                 "n_interactions"    : n,
                 "coop_rate_self"    : round(coop_rate_self, 4),
