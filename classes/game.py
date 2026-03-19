@@ -209,13 +209,3 @@ class Game() :
                 f"{s['avg_victimized_rate']:>10.1%} {s['avg_mutual_coop_rate']:>7.1%}")
         print("="*55)
 
-
-
-
-    def random_matching(self) -> list :
-        """ Takes every player initial id and shuffle it to do a perfect match shuffled list
-
-        Returns:
-            list: Shuffled list
-        """
-        return utils.shuffle(self.players_indexes.copy())
