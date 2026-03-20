@@ -61,10 +61,20 @@ class Game() :
         """ List every possible combination of players, and make them play NUM_TURNS times."""
         pairs = list(combinations(self.players_indexes, 2))
         random.shuffle(pairs)
+
+        total     = len(pairs) * self.num_turns  # Total no. of matchups
+        completed = 0
+        milestone = max(1, total // 100)  # Report every 1%
+
         for p1, p2 in pairs:
-            for _ in range(self.num_turns) :
-                self.play_match(p1,p2)
-        
+            for _ in range(self.num_turns):
+                self.play_match(p1, p2)
+                completed += 1
+                if completed % milestone == 0:
+                    pct = completed / total * 100
+                    print(f"\rSimulation progress: {pct:5.1f}%  ({completed:,} / {total:,} steps)", end="", flush=True)
+
+        print()  # Newline after progress bar
         self.print_metrics()
 
     

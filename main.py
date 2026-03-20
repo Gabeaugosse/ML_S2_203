@@ -28,8 +28,8 @@ def main() :
     num_turns   = args.nb_turns   if args.nb_turns   is not None else default_params.NUM_TURNS
 
     strategy_mix = {
-    TitForTat:          0,
-    AlwaysCooperate:    0.5,
+    TitForTat:          0.5,
+    AlwaysCooperate:    0,
     AlwaysBetray:       0,
     RandomAction:       0,
     Joss:               0,
@@ -41,7 +41,7 @@ def main() :
     ql_params = {
         "alpha"         : 0.1,    # Learning rate
         "gamma"         : 0.9,    # Discount factor
-        "epsilon"       : 1.0,    # Initial exploration rate
+        "epsilon"       : 1.0,    # Initial exploration rate (random at first)
         "epsilon_min"   : 0.01,   # Minimum exploration rate
         "epsilon_decay" : 0.9999, # Multiplicative decay per step
     }
