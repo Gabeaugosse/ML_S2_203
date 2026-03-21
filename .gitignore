@@ -5,7 +5,10 @@ __pycache__/
 
 # C extensions
 *.so
-
+rapport.aux
+rapport.fdb_latexmk
+rapport.fls
+rapport.synctex.gz
 # Distribution / packaging
 .Python
 build/

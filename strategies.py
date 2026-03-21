@@ -207,7 +207,7 @@ class QLearningStrategy(Strategy):
         # (my_last_action, opp_last_action) — i.e. what just happened this turn.
         new_state = (my_action, opp_action) if old_state else ()
         
-        # Q-learning update
+        # Q-learning update (Bellman equation)
         old_q = self.q_table[(old_state, action_taken)]
         max_next_q = max(self.q_table[(new_state, a)] for a in ["C", "B"]) if new_state else 0
         new_q = old_q + self.alpha * (reward + self.gamma * max_next_q - old_q)

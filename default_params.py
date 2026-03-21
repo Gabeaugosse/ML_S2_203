@@ -5,7 +5,7 @@ ACTIONS_INDEX = {"C" : 0,
                  "B" : 1}
 NUM_PLAYERS = 2
 
-NUM_TURNS = 150000
+NUM_TURNS = 500000
 
 P_COOP = 0.1
 

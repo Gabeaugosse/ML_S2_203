@@ -28,9 +28,9 @@ def main() :
     num_turns   = args.nb_turns   if args.nb_turns   is not None else default_params.NUM_TURNS
 
     strategy_mix = {
-    TitForTat:          0.5,
+    TitForTat:          0,
     TwoTitsForTat:      0,
-    TitForTwoTats:      0,
+    TitForTwoTats:      0.5,
     SuspiciousTitForTat: 0,
     AlwaysCooperate:    0,
     AlwaysBetray:       0,
@@ -45,10 +45,10 @@ def main() :
     # Q-Learning hyperparameters
     ql_params = {
         "alpha"         : 0.1,    # Learning rate
-        "gamma"         : 0.1,    # Discount factor — high weight on future rewards
+        "gamma"         : 0.9,    # Discount factor — high weight on future rewards
         "epsilon"       : 1.0,     # Initial exploration rate (random at first)
         "epsilon_min"   : 0.01,    # Minimum exploration rate
-        "epsilon_decay" : 0.9999, # Slower decay → ~230k steps of meaningful exploration
+        "epsilon_decay" : 0.9999, # ER decay 
     }
 
     # Play the game
