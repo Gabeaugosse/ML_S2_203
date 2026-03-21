@@ -124,7 +124,7 @@ We compare its performance against a set of baseline strategies, ranging from na
 
 \subsection{Game description}
 
-The Prisoner's Dilemma is a symmetric two-player game popularised in the context of game theory by Robert Axelrod in 1984. At each round, two players simultaneously and independently choose between two actions: \textbf{cooperate} (C) or \textbf{betray} (B). The payoff matrix is defined as follows:
+The Prisoner's Dilemma is a symmetric two-player game originally formulated by \citet{tucker1950} and popularised in the context of game theory by \citet{axelrod1984}. At each round, two players simultaneously and independently choose between two actions: \textbf{cooperate} (C) or \textbf{betray} (B). The payoff matrix is defined as follows:
 
 \begin{table}[H]
   \centering
@@ -185,7 +185,7 @@ The simulator is built around three components: a \texttt{Strategy} (the decisio
 
 \subsection{Implemented strategies}
 
-In order to test a learning agent, we implemented a set of strategies to play against. \\These strategies can be divided into two categories: naive strategies and reactive strategies.
+In order to test a learning agent, we implemented a set of strategies to play against, drawn from the canonical taxonomy of IPD strategies \citep{kuhn2019sep}. These strategies can be divided into two categories: naive strategies and reactive strategies.
 
 \subsubsection{Naive strategies (baseline heuristics)}
 
@@ -308,7 +308,7 @@ Against \texttt{AlwaysBetray}, the agent reciprocates by defecting as well, conv
 
 Notably, the exploitation rate is closely related to the opponent's cooperation probability: $\approx 48.7\%$ against \texttt{RandomAction} ($p=0.5$) and $\approx 68.2\%$ against \texttt{ProbaCooperation} ($p=0.7$), confirming that the agent has learned to consistently defect.\\
 
-The conclusion of this first part is that cooperation cannot arise againt naive strategies : defection must be punished and cooperation must be rewarded.
+The conclusion of this first part is that cooperation cannot arise againt naive strategies : \textbf{defection must be punished and cooperation must be rewarded}.
 
 \subsubsection{Reactive strategies}
  As we have seen in the previous section, cooperation cannot arise against naive strategies. However, it may arise against reactive strategies. This section shows how our agent behaves against reactive strategies.
@@ -334,15 +334,35 @@ The conclusion of this first part is that cooperation cannot arise againt naive 
 \end{table}
 
 Analysing the results, we can see that DiscriminatingAltruist and Bully are the only strategies that do not lead to cooperation. From this, we can deduce that in order for cooperation to arise, the agent must be able to react both to defection and cooperation.
-These two fails as they tend to not be "forgiving" and "retaliating" enough. 
+These two fails as they tend to not be "forgiving" and "retaliating" enough. Here again, the agent converges to defection. \\
+
+When it comes for TitForTat and its variants, we can see that the Q-learning agent manages to cooperate with them. 
+The first interesting case is against TitForTwoTats : the agent manages to cooperate with it, but only 50\% of the time. 
+This is because TitForTwoTats is more forgiving than the others, we can see through the results that the agent understood its opponent strategy and exploited it by defecting as much as possible but not twice in a row (50\% of cooperation while getting victimised 0.7\% of the time). \\
+
+Finally, we got the the strategies that applies the "Eye for an eye" rule. All those strategies lead to cooperation from the agent. This is conclusive with the theory, as it is intuitive that the agent should cooperate with strategies that cooperate with it, and defect it when it defects them (on the long run, you prefer to get 3 points every turn rather than 1).\\
+
+Notably, we see that overpunishing strategies (or just less forgiving strategies) such as Joss and TwoTitsForTat lead to less cooperation. The agent tends to cooperate marginally less but get victimised more often. The Q-learning agent adapts its q-table depending on the it's own actions and the opponent's reactions. Therefore, once it's politics has converged, Joss can easily exploit it as it tends to defect marginally, which is not going to be punished by the agent. \\ 
+
+We deduce that the Q-learning agent is able to learn the optimal strategy and that cooperation can arise and be maximised with strategies following conditions : \textbf{able to react both to defection and cooperation, "forgiving" and "retaliating" enough, and not overpunishing}. \\
 
 \section{Hyperparameter Sensitivity Analysis}
 \label{sec:hyperparams}
+
+\subsection{Impact of $\gamma$}
+
+\subsection{Impact of $\alpha$}
+
+\subsection{Impact of $\varepsilon$}
 
 \section{Experimental Results}
 \label{sec:results}
 
 \section{Conclusion}
 \label{sec:conclusion}
+
+%% ---- References ----
+\newpage
+\bibliography{references}
 
 \end{document}

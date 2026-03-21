@@ -1,7 +1,7 @@
-Implémentation de la classe Agent :
- - Definir deux sous classe d'agent pour ceux en QLearning et ceux en stratégie prédéfinie
-
-Inclure les sources dans un doc :
- - https://plato.stanford.edu/entries/prisoner-dilemma/strategy-table.html
+Rapport :
+ - Partie 5 : Hyperparameter Sensitivity Analysis 
+ - Partie 6 : Experimental Results
+ - Partie 7 : Conclusion
 
 Implémentation des outputs à mettre dans le rapport
+
