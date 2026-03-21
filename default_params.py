@@ -7,7 +7,7 @@ NUM_PLAYERS = 2
 
 NUM_TURNS = 500000
 
-P_COOP = 0.1
+P_COOP = 0.7
 
 JOSS_P = 0.1
 

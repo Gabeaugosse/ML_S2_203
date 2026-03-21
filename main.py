@@ -27,17 +27,18 @@ def main() :
     num_players = args.nb_players if args.nb_players is not None else default_params.NUM_PLAYERS
     num_turns   = args.nb_turns   if args.nb_turns   is not None else default_params.NUM_TURNS
 
+    # Here insert the strategy mix as a proportion of the total number of players
     strategy_mix = {
     TitForTat:          0,
     TwoTitsForTat:      0,
-    TitForTwoTats:      0.5,
+    TitForTwoTats:      0,
     SuspiciousTitForTat: 0,
     AlwaysCooperate:    0,
     AlwaysBetray:       0,
     RandomAction:       0,
     Joss:               0,
     DiscriminatingAltruist: 0,
-    Bully:              0,
+    Bully:              0.5,
     ProbaCooperation:   0,
     
     QLearningStrategy: 0.5

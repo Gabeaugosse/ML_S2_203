@@ -257,6 +257,85 @@ We could use a constant epsilon, but the goal is to learn the optimal policy, so
 \section{Comparison with Baseline Strategies}
 \label{sec:baselines}
 
+\subsection{Evaluation framework}
+
+% TODO: describe the simulation protocol (number of players, rounds, pairs, metrics)
+
+Strategies are evaluated on several metrics computed at the end of the simulation:
+\begin{itemize}
+  \item \textbf{Cooperation rate}: proportion of C moves played by the agent;
+  \item \textbf{Exploitation rate} (defecting when the opponent cooperates);
+  \item \textbf{Victimisation rate} (cooperating when the opponent defects);
+  \item \textbf{Mutual cooperation rate}: proportion of $(C, C)$ rounds.
+\end{itemize}
+
+\subsection{Comparative results}
+
+For the first presented results, we chose the following set of parameters (the most sensitive one being gamma, our agent here values future rewards a lot):
+\begin{center}
+  \begin{tabular}{ccccc}
+    \toprule
+    $\alpha$ & $\gamma$ & $\varepsilon_0$ & $\varepsilon_{\min}$ & $\varepsilon_{\text{decay}}$ \\
+    \midrule
+    0.1 & 0.9 & 1.0 & 0.01 & 0.9999 \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\subsubsection{Naive strategies}
+
+\begin{table}[H]
+  \centering
+  \caption{Behavioural summary of the Q-learning agent against naive strategies.}
+  \label{tab:results}
+  \begin{tabular}{lrrrr}
+    \toprule
+    Strategy & Coop. & Exploit. & Victimised & Mut.C \\
+    \midrule
+    % TODO: paste rows from the simulation output
+    AlwaysCooperate     & 1.4\% & 98.6\% & 0\% & 1.4\%  \\
+    AlwaysBetray        & 1.4\% & 0\% & 1.4\% & 0\%  \\
+    RandomAction        & 2.6\% & 48.7\% & 1.3\% & 1.3\%  \\
+    ProbaCooperation(p=0.7)    & 2.5\% & 68.2\% & 0.8\% & 1.8\%  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+These results are fully consistent with game-theoretic predictions: the agent converges to systematic defection in all cases. \\
+
+Against \texttt{AlwaysCooperate}, exploitation reaches $98.6\%$; the residual $1.4\%$ cooperation is due to the exploration phase, not a learned behaviour : the agent may cooperate at the beginning of the game but then exploits the opponent.
+Against \texttt{AlwaysBetray}, the agent reciprocates by defecting as well, converging to the Nash equilibrium $(B,B)$. \\
+
+Notably, the exploitation rate is closely related to the opponent's cooperation probability: $\approx 48.7\%$ against \texttt{RandomAction} ($p=0.5$) and $\approx 68.2\%$ against \texttt{ProbaCooperation} ($p=0.7$), confirming that the agent has learned to consistently defect.\\
+
+The conclusion of this first part is that cooperation cannot arise againt naive strategies : defection must be punished and cooperation must be rewarded.
+
+\subsubsection{Reactive strategies}
+ As we have seen in the previous section, cooperation cannot arise against naive strategies. However, it may arise against reactive strategies. This section shows how our agent behaves against reactive strategies.
+
+\begin{table}[H]
+  \centering
+  \caption{Behavioural summary of the Q-learning agent against reactive strategies.}
+  \label{tab:results2}
+  \begin{tabular}{lrrrr}
+    \toprule
+    Strategy & Coop. & Exploit. & Victimised & Mut.C \\
+    \midrule
+    % TODO: paste rows from the simulation output
+    TitForTat    & 98.6\% & 1.2\% & 1.2\% & 97.4\%  \\
+    SuspiciousTitForTat & 98.6\% & 1.2\% & 1.2\% & 97.4\%  \\
+    TwoTitsForTat & 98.5\% & 1.0\% & 2.2\% & 96.3\%  \\
+    Joss & 98.4\% & 1.2\% & 11.0\% & 87.4\%  \\
+    TitForTwoTats & 50\% & 49.8\% & 0.7\% & 49.3\%  \\
+    DiscriminatingAltruist & 1.5\% & 0.0\% & 1.5\% & 0.0\%  \\
+    Bully & 1.4\% & 97.4\% & 0.3\% & 1.2\%  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Analysing the results, we can see that DiscriminatingAltruist and Bully are the only strategies that do not lead to cooperation. From this, we can deduce that in order for cooperation to arise, the agent must be able to react both to defection and cooperation.
+These two fails as they tend to not be "forgiving" and "retaliating" enough. 
+
 \section{Hyperparameter Sensitivity Analysis}
 \label{sec:hyperparams}
 
