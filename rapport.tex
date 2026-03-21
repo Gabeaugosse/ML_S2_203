@@ -170,8 +170,41 @@ This project will try to answer to the following question: \\
 \subsection{Outline}
 The report is organised as follows. Section~\ref{sec:strategies} presents the full set of implemented strategies and the experimental framework. Section~\ref{sec:qlearning} describes the Q-learning model, its mathematical formulation, and the rationale for this choice. Section~\ref{sec:baselines} compares baseline strategy performance. Section~\ref{sec:hyperparams} analyses hyperparameter sensitivity. Section~\ref{sec:results} presents our experimental results and visualisations, and Section~\ref{sec:conclusion} concludes.
 
+\newpage
+
 \section{Experimental Framework and Strategy Set}
 \label{sec:strategies}
+
+\subsection{Simulator architecture}
+
+The simulator is built around three components: a \texttt{Strategy} (the decision rule), an \texttt{Agent} (a player carrying a strategy, a score, and a local interaction memory), and a \texttt{Game} (the orchestrator). At each round, both agents simultaneously submit an action to the \texttt{Game}, which resolves payoffs from the matrix (same as in \ref{tab:payoff}), updates scores, and writes the outcome to each agent's memory. All distinct agent pairs are played exhaustively for $T = 500{,}000$ rounds.
+
+\subsection{Implemented strategies}
+
+In order to test a learning agent, we implemented a set of strategies to play against. \\These strategies can be divided into two categories: naive strategies and reactive strategies.
+
+\subsubsection{Naive strategies (baseline heuristics)}
+
+\begin{description}
+  \item[\texttt{AlwaysCooperate}] Cooperates unconditionally at every round. Represents the maximum cooperation bound.
+  \item[\texttt{AlwaysBetray}] Defects systematically. Constitutes the Nash equilibrium of the IPD.
+  \item[\texttt{RandomAction}] Defects or cooperates with the same probability $\frac{1}{2}$.
+  \item[\texttt{ProbaCooperation}] Cooperates with a fixed probability $p$ (parameter).
+\end{description}
+
+\subsubsection{Reactive strategies}
+
+\begin{description}
+  \item[\texttt{TitForTat} (TFT)] Cooperates on the first round, then mirrors the opponent's previous action.
+  \item[\texttt{SuspiciousTitForTat}] Identical to TFT but starts with a defection.
+  \item[\texttt{TitForTwoTats}] Only defects after two consecutive defections by the opponent (more lenient).
+  \item[\texttt{TwoTitsForTat}] Defects twice following a single received defection (more punitive).
+  \item[\texttt{Joss}] TFT with noise: defects randomly with probability $p_j$ to exploit cooperators.
+  \item[\texttt{DiscriminatingAltruist}] Cooperates with any player who has never defected; otherwise refuses engagement.
+  \item[\texttt{Bully}] Defects until the opponent defects, then cooperates. Exploits accommodating strategies.
+\end{description}
+
+%% 
 
 \section{The Q-Learning Model}
 \label{sec:qlearning}
