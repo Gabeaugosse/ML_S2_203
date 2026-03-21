@@ -9,6 +9,11 @@ rapport.aux
 rapport.fdb_latexmk
 rapport.fls
 rapport.synctex.gz
+rapport.bbl
+rapport.blg
+rapport.out
+rapport.toc
+rapport.pdf
 # Distribution / packaging
 .Python
 build/
