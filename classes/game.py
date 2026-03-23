@@ -6,7 +6,7 @@ from itertools import combinations
 import random
 import math
 
-class Game() :
+class Game:
     def __init__(self, num_players: int, num_turns: int, strategy_mix: dict, ql_params: dict = None):
         """ strategy_mix : dict mapping Strategy -> proportion (float), must sum to 1.
             ql_params    : dict of Q-Learning hyperparams (alpha, gamma, epsilon, epsilon_min, epsilon_decay).
@@ -78,12 +78,11 @@ class Game() :
         self.print_metrics()
 
     
-    def play_match(self, p1_id: int, p2_id: int) -> None :
+    def play_match(self, p1_id: int, p2_id: int) -> None:
         """ Solve an interaction between two players."""
         # Instanciate each player into a variable
         player_1 = self.players[p1_id] 
         player_2 = self.players[p2_id]
-        # print(f"Player 1 score: {player_1.get_score()}, Player 2 score: {player_2.get_score()}")
 
         # Give the opponnent id to each player for them to choose their action
         first_player_action = player_1.choose_action(p2_id)
@@ -100,8 +99,6 @@ class Game() :
         player_1.update_score(player_1_gain)
         player_2.update_score(player_2_gain)
         
-        # print(player_1_gain,player_2_gain)
-        
         # Update the logs and players history
         player_1.update_interactions(p2_id, {"player_action" : first_player_action, 
                                             "opponent_action" : second_player_action})
@@ -117,12 +114,11 @@ class Game() :
         
     def compute_metrics(self) -> dict:
         """
-        Calcule l'ensemble des métriques de fin de partie.
+        Compute metrics at the end of the game.
         """
         stats = {}
 
         for pid, agent in self.players.items():
-            # total_interactions = sum(len(v) for v in agent.interactions.items())
             
             all_my_actions    = [r["player_action"]   for hist in agent.interactions.values() for r in hist]
             all_opp_actions   = [r["opponent_action"]  for hist in agent.interactions.values() for r in hist]

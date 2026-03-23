@@ -11,13 +11,14 @@ that will determine the score resulting of the interaction and record it in its 
 
 from strategies import Strategy
 
-class Agent() :
+class Agent:
     def __init__(self, id : str, strategy : Strategy):
         
         self.id = id # Unique identification for each player
         self.strategy = strategy  # Already-instantiated strategy object
 
-        self.interactions = {} # At first, the agent met no one. Then store each result of its interactions with other agent. (Only access to its own results)
+        # At first, the agent met no one. Then store each result of its interactions with other agent. (Only access to its own results)
+        self.interactions = {} 
         self.score = 0 # Null score at the beginning (consider starting with non null)
     
     def update_score(self, change : int) -> None :
@@ -51,13 +52,17 @@ class Agent() :
         return self.strategy.choose_action(self.id, other_agent_id, self.interactions)
     
     def get_score(self) -> int:
+        """Return the agent's cumulative score."""
         return self.score
     
     def get_id(self) -> str :
+        """Return the agent's id."""
         return self.id
     
     def get_strategy(self) :
+        """Return the agent's strategy (as an object)."""
         return self.strategy
     
     def get_interactions(self) -> dict :
+        """Return the agent's interactions (all)."""
         return self.interactions

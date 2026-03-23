@@ -2,9 +2,8 @@ from classes.game import Game
 import default_params
 import argparse
 from strategies import *
-from utils import plot_convergence
 
-def main() :
+def main():
 
     # Easier to execute the code with custom params from the terminal
     parser = argparse.ArgumentParser(description="Simulation params")
@@ -56,10 +55,9 @@ def main() :
     print(f"\nSimulation with {num_players} players who will play against each other {'{:.0f}'.format(num_turns)} times !\n")
     game = Game(num_players=num_players, num_turns=num_turns, strategy_mix=strategy_mix, ql_params=ql_params)
     game.play()
-    #plot_convergence(game, num_turns)
     
 
 
 
-if __name__ == "__main__" :
+if __name__ == "__main__":
     main()

@@ -40,7 +40,10 @@ def _rolling_coop(hist, window=None):
 # 1. Alpha impact – TwoTitsForTat
 # ─────────────────────────────────────────────
 
-def plot_alpha_impact_ttft(num_turns=50_000, output_path="alpha_impact_ttft.png"):
+def plot_alpha_impact_ttft(num_turns=50_000, output_path="img/alpha_impact_ttft.png"):
+    """
+    Plot the impact of alpha on QL convergence against TwoTitsForTat.
+    """
     alphas = [0.001, 0.01, 0.1, 0.5, 0.9, 1]
     colors = ['#E63946', '#F4A261', '#E9C46A', '#2A9D8F', '#264653', '#000000']
 
@@ -71,10 +74,13 @@ def plot_alpha_impact_ttft(num_turns=50_000, output_path="alpha_impact_ttft.png"
 
 
 # ─────────────────────────────────────────────
-# 2. Alpha impact – TitForTat  (duplicate script found in paste)
+# 2. Alpha impact – TitForTat
 # ─────────────────────────────────────────────
 
-def plot_alpha_impact_tft(num_turns=50_000, output_path="alpha_impact_tft.png"):
+def plot_alpha_impact_tft(num_turns=50_000, output_path="img/alpha_impact_tft.png"):
+    """
+    Plot the impact of alpha on QL convergence against TitForTat.
+    """
     alphas = [0.001, 0.01, 0.1, 0.5, 0.9, 1]
     colors = ['#E63946', '#F4A261', '#E9C46A', '#2A9D8F', '#264653', '#000000']
 
@@ -108,7 +114,10 @@ def plot_alpha_impact_tft(num_turns=50_000, output_path="alpha_impact_tft.png"):
 # 3. Naive strategies
 # ─────────────────────────────────────────────
 
-def plot_naive_coop(num_turns=100_000, output_path="naive_coop.png"):
+def plot_naive_coop(num_turns=100_000, output_path="img/naive_coop.png"):
+    """
+    Plot the impact of alpha on QL convergence against naive strategies.
+    """
     strats = [
         (AlwaysCooperate, "AlwaysCooperate", '#2A9D8F'),
         (AlwaysBetray,    "AlwaysBetray",    '#E63946'),
@@ -146,7 +155,10 @@ def plot_naive_coop(num_turns=100_000, output_path="naive_coop.png"):
 # 4. Lenient TFT variants
 # ─────────────────────────────────────────────
 
-def plot_lenient_tft_coop(num_turns=100_000, output_path="lenient_tft_coop.png"):
+def plot_lenient_tft_coop(num_turns=100_000, output_path="img/lenient_tft_coop.png"):
+    """
+    Plot the impact of alpha on QL convergence against lenient TFT variants.
+    """
     strats = [
         (TitForTat,     "TitForTat",     '#E63946'),
         (TitForTwoTats, "TitForTwoTats", '#F4A261'),
@@ -182,7 +194,10 @@ def plot_lenient_tft_coop(num_turns=100_000, output_path="lenient_tft_coop.png")
 # 5. Gamma impact
 # ─────────────────────────────────────────────
 
-def plot_gamma_impact(num_turns=100_000, output_path="gamma_impact.png"):
+def plot_gamma_impact(num_turns=100_000, output_path="img/gamma_impact.png"):
+    """
+    Plot the impact of gamma on QL convergence against TitForTat.
+    """
     gammas = [0.1, 0.2, 0.3, 1/3, 0.4, 0.6, 0.8, 0.99]
     colors = cm.coolwarm(np.linspace(1, 0, len(gammas)))
 
@@ -221,7 +236,10 @@ def plot_gamma_impact(num_turns=100_000, output_path="gamma_impact.png"):
 # 6. Epsilon decay impact
 # ─────────────────────────────────────────────
 
-def plot_epsilon_decay(num_turns=None, output_path="epsilon_decay.png"):
+def plot_epsilon_decay(num_turns=None, output_path="img/epsilon_decay.png"):
+    """
+    Plot the impact of epsilon decay on QL convergence against TitForTat.
+    """
     if num_turns is None:
         num_turns = default_params.NUM_TURNS
 
