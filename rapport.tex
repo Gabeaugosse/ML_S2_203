@@ -312,7 +312,7 @@ The conclusion of this first part is that cooperation cannot arise againt naive 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.75\textwidth]{naive_coop.png}
+  \includegraphics[width=0.75\textwidth]{img/naive_coop.png}
   \caption{Q-learning agent policy against naive strategies.}
   \label{fig:naive_coop}
 \end{figure}
@@ -349,7 +349,7 @@ This strategy is more forgiving than the others, we can see through the results 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.75\textwidth]{lenient_tft_coop.png}
+  \includegraphics[width=0.75\textwidth]{img/lenient_tft_coop.png}
   \caption{Q-learning agent policy against lenient Tit-for-Tat strategies.}
   \label{fig:lenient_tft_coop}
 \end{figure}
@@ -382,7 +382,7 @@ Lastly, we need to choose a decay rate. If it is too high, the agent might conve
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.70\textwidth]{epsilon_decay.png}
+  \includegraphics[width=0.70\textwidth]{img/epsilon_decay.png}
   \caption{Slower decay allows for a longer exploration phase before locking into cooperation.}
   \label{fig:epsilon_decay}
 \end{figure}
@@ -402,7 +402,7 @@ Thus, a moderate value strikes the right balance between rapid adaptation and Q-
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.70\textwidth]{alpha_impact_ttft.png}
+  \includegraphics[width=0.70\textwidth]{img/alpha_impact_ttft.png}
   \caption{Impact of the learning rate ($\alpha$) on the convergence against \texttt{TwoTitsForTat}.}
   \label{fig:alpha_impact}
 \end{figure}
@@ -434,7 +434,7 @@ For the agent to rationally prefer cooperation, we must have $V_C > V_B$, which 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.70\textwidth]{gamma_impact.png}
+  \includegraphics[width=0.70\textwidth]{img/gamma_impact.png}
   \caption{Impact of the discount factor ($\gamma$) on the cooperation rate against \texttt{TitForTat}. The gamma limit in theory is well found in our simulation.}
   \label{fig:gamma_impact}
 \end{figure}
@@ -451,7 +451,7 @@ Now that we have set the parameters of our Q-learning agent, and have seen the r
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.75\textwidth]{convergence_2Q.png}
+  \includegraphics[width=0.75\textwidth]{img/convergence_2Q.png}
   \caption{Evolution of the cooperation rate for two Q-learning agents playing against each other.}
   \label{fig:convergence_2Q}
 \end{figure}

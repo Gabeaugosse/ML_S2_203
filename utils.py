@@ -1,79 +1,253 @@
 import matplotlib
-matplotlib.use('Agg')  
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import matplotlib.ticker as mticker
+import matplotlib.cm as cm
 import numpy as np
 import os
-from strategies import QLearningStrategy
-import matplotlib.cm as cm
+import default_params
+
+from classes.game import Game
+from strategies import *
 
 
-def plot_convergence(game, num_turns: int, output_path: str = "convergence.png") -> None:
-    """
-    Generate and save a figure illustrating the convergence of the
-    Q-learning policy, plotting the cooperation rate over time.
-    """
-    # --- Retrieve all Q-learning agents from the population ---
-    ql_agents = [
-        agent for agent in game.players.values()
-        if isinstance(agent.get_strategy(), QLearningStrategy)
-    ]
-    if not ql_agents:
-        print("No Q-learning agent found; figure not generated.")
-        return
+# ─────────────────────────────────────────────
+# Shared helper
+# ─────────────────────────────────────────────
 
-    # Select the first Q-learning agent for general parameters
-    strat_0 = ql_agents[0].get_strategy()
-    hist_0  = strat_0.history
-    T     = len(hist_0["action"])   # Total no. of steps recorded
-    turns = np.arange(1, T + 1)
-    window = max(200, T // 100)
-
-    # ===================== FIGURE LAYOUT =====================
-    fig, ax1 = plt.subplots(figsize=(10, 5))
-    fig.suptitle(
-        "Convergence of the Q-agent policy\n"
-        f"(α={strat_0.alpha}, γ={strat_0.gamma}, "
-        f"ε_min={strat_0.epsilon_min}, decay={strat_0.epsilon_decay})",
-        fontsize=13, fontweight="bold"
+def _run_ql_game(strategy_mix, ql_params, num_turns):
+    """Run a 2-player game and return the QL agent's action history."""
+    game = Game(num_players=2, num_turns=num_turns,
+                strategy_mix=strategy_mix, ql_params=ql_params)
+    game.play()
+    ql_agent = next(
+        a for a in game.players.values()
+        if isinstance(a.get_strategy(), QLearningStrategy)
     )
+    return ql_agent.get_strategy().history
 
-  
-    colors = cm.tab10(np.linspace(0, 1, max(10, len(ql_agents))))
 
-    for i, agent in enumerate(ql_agents):
-        strat = agent.get_strategy()
-        hist  = strat.history
-        
-        actions_bin = np.array([1 if a == "C" else 0 for a in hist["action"]], dtype=float)
-        if len(actions_bin) >= window:
-            coop_rate = np.convolve(actions_bin, np.ones(window) / window, mode="valid")
-            turns_roll  = np.arange(window, len(actions_bin) + 1)
-            
-            label = f"Agent {i+1}" if len(ql_agents) > 1 else "Cooperation rate"
-            c = colors[i % 10] if len(ql_agents) > 1 else "#2A9D8F"
-            ax1.plot(turns_roll, coop_rate, color=c, lw=1.5, alpha=0.8, label=label)
+def _rolling_coop(hist, window=None):
+    """Return (turns_roll, coop_rate) arrays from an action history dict."""
+    actions_bin = np.array([1 if a == "C" else 0 for a in hist["action"]], dtype=float)
+    T = len(actions_bin)
+    w = window or max(200, T // 100)
+    coop_rate = np.convolve(actions_bin, np.ones(w) / w, mode="valid")
+    turns_roll = np.arange(w, T + 1)
+    return turns_roll, coop_rate, w
 
-    ax1.set_ylabel("Cooperation rate")
-    ax1.tick_params(axis="y")
-    ax1.set_ylim(-0.05, 1.15)
-    ax1.yaxis.set_major_formatter(mticker.PercentFormatter(xmax=1))
-    ax1.set_xlabel("Step")
-    if len(ql_agents) <= 10:
-        ax1.legend(loc="upper left", fontsize=9)
-    ax1.set_title(f"Agents behaviour over time (window={window})")
-    ax1.grid(True, alpha=0.3)
 
-    # Secondary y-axis: ε schedule
-    color_eps = "#000000"
-    ax1b = ax1.twinx()
-    ax1b.plot(turns, hist_0["epsilon_hist"], color=color_eps, lw=1, alpha=0.7, label="ε (exploration rate)")
-    ax1b.set_ylabel("ε", color=color_eps)
-    ax1b.tick_params(axis="y", labelcolor=color_eps)
-    ax1b.set_ylim(-0.05, 1.15)
-    ax1b.legend(loc="upper right", fontsize=9)
+# ─────────────────────────────────────────────
+# 1. Alpha impact – TwoTitsForTat
+# ─────────────────────────────────────────────
 
-    plt.tight_layout()
+def plot_alpha_impact_ttft(num_turns=50_000, output_path="alpha_impact_ttft.png"):
+    alphas = [0.001, 0.01, 0.1, 0.5, 0.9, 1]
+    colors = ['#E63946', '#F4A261', '#E9C46A', '#2A9D8F', '#264653', '#000000']
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    window = None
+
+    for alpha, color in zip(alphas, colors):
+        print(f"\nRunning alpha={alpha}")
+        ql_params = {
+            "alpha": alpha, "gamma": 0.9,
+            "epsilon": 1.0, "epsilon_min": 0.01,
+            "epsilon_decay": 0.9999,  # fast decay to isolate alpha's effect
+        }
+        hist = _run_ql_game({TwoTitsForTat: 0.5, QLearningStrategy: 0.5},
+                            ql_params, num_turns)
+        turns_roll, coop_rate, window = _rolling_coop(hist)
+        ax.plot(turns_roll, coop_rate, label=f"α = {alpha}", color=color, lw=1.5)
+
+    ax.set_title("Impact of Learning Rate (α) on convergence against TwoTitsForTat (50K turns)")
+    ax.set_xlabel("Turn")
+    ax.set_ylabel(f"Cooperation rate (window={window})")
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
     plt.savefig(output_path, dpi=150, bbox_inches="tight")
-    print(f"\nFigure saved: {os.path.abspath(output_path)}")
-    plt.close()
+    print(f"\nSaved {os.path.abspath(output_path)}")
+    plt.close(fig)
+
+
+# ─────────────────────────────────────────────
+# 2. Alpha impact – TitForTat  (duplicate script found in paste)
+# ─────────────────────────────────────────────
+
+def plot_alpha_impact_tft(num_turns=50_000, output_path="alpha_impact_tft.png"):
+    alphas = [0.001, 0.01, 0.1, 0.5, 0.9, 1]
+    colors = ['#E63946', '#F4A261', '#E9C46A', '#2A9D8F', '#264653', '#000000']
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    window = None
+
+    for alpha, color in zip(alphas, colors):
+        print(f"\nRunning alpha={alpha}")
+        ql_params = {
+            "alpha": alpha, "gamma": 0.9,
+            "epsilon": 1.0, "epsilon_min": 0.01,
+            "epsilon_decay": 0.9999,
+        }
+        hist = _run_ql_game({TitForTat: 0.5, QLearningStrategy: 0.5},
+                            ql_params, num_turns)
+        turns_roll, coop_rate, window = _rolling_coop(hist)
+        ax.plot(turns_roll, coop_rate, label=f"α = {alpha}", color=color, lw=1.5)
+
+    ax.set_title("Impact of Learning Rate (α) on convergence against TitForTat (50K turns)")
+    ax.set_xlabel("Turn")
+    ax.set_ylabel(f"Cooperation rate (window={window})")
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
+    plt.savefig(output_path, dpi=150, bbox_inches="tight")
+    print(f"\nSaved {os.path.abspath(output_path)}")
+    plt.close(fig)
+
+
+# ─────────────────────────────────────────────
+# 3. Naive strategies
+# ─────────────────────────────────────────────
+
+def plot_naive_coop(num_turns=100_000, output_path="naive_coop.png"):
+    strats = [
+        (AlwaysCooperate, "AlwaysCooperate", '#2A9D8F'),
+        (AlwaysBetray,    "AlwaysBetray",    '#E63946'),
+        (RandomAction,    "RandomAction",    '#F4A261'),
+        (ProbaCooperation,"ProbaCooperation",'#264653'),
+    ]
+    base_ql = {
+        "alpha": 0.1, "gamma": 0.9,
+        "epsilon": 1.0, "epsilon_min": 0.01, "epsilon_decay": 0.9999,
+    }
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    window = None
+
+    for strat_class, strat_name, color in strats:
+        print(f"\nRunning QLearning vs {strat_name}")
+        hist = _run_ql_game({strat_class: 0.5, QLearningStrategy: 0.5},
+                            base_ql, num_turns)
+        turns_roll, coop_rate, window = _rolling_coop(hist)
+        ax.plot(turns_roll, coop_rate, label=strat_name, color=color, lw=1.5)
+
+    ax.set_title("Q-Learning Cooperation Rate vs Naive Strategies")
+    ax.set_xlabel("Turn")
+    ax.set_ylabel(f"Cooperation rate (window={window})")
+    ax.set_ylim(-0.05, 1.05)
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
+    plt.savefig(output_path, dpi=150, bbox_inches="tight")
+    print(f"\nSaved {os.path.abspath(output_path)}")
+    plt.close(fig)
+
+
+# ─────────────────────────────────────────────
+# 4. Lenient TFT variants
+# ─────────────────────────────────────────────
+
+def plot_lenient_tft_coop(num_turns=100_000, output_path="lenient_tft_coop.png"):
+    strats = [
+        (TitForTat,     "TitForTat",     '#E63946'),
+        (TitForTwoTats, "TitForTwoTats", '#F4A261'),
+    ]
+    base_ql = {
+        "alpha": 0.1, "gamma": 0.9,
+        "epsilon": 1.0, "epsilon_min": 0.01, "epsilon_decay": 0.9999,
+    }
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    window = None
+
+    for strat_class, strat_name, color in strats:
+        print(f"\nRunning QLearning vs {strat_name}")
+        hist = _run_ql_game({strat_class: 0.5, QLearningStrategy: 0.5},
+                            base_ql, num_turns)
+        turns_roll, coop_rate, window = _rolling_coop(hist)
+        ax.plot(turns_roll, coop_rate, label=strat_name, color=color, lw=1.5)
+
+    ax.set_title("Q-Learning Cooperation Rate vs Lenient Tit-for-Tat")
+    ax.set_xlabel("Turn")
+    ax.set_ylabel(f"Cooperation rate (window={window})")
+    ax.set_ylim(-0.05, 1.05)
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
+    plt.savefig(output_path, dpi=150, bbox_inches="tight")
+    print(f"\nSaved {os.path.abspath(output_path)}")
+    plt.close(fig)
+
+
+# ─────────────────────────────────────────────
+# 5. Gamma impact
+# ─────────────────────────────────────────────
+
+def plot_gamma_impact(num_turns=100_000, output_path="gamma_impact.png"):
+    gammas = [0.1, 0.2, 0.3, 1/3, 0.4, 0.6, 0.8, 0.99]
+    colors = cm.coolwarm(np.linspace(1, 0, len(gammas)))
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    window = None
+
+    for gamma, color in zip(gammas, colors):
+        print(f"\nRunning gamma={gamma:.3f}")
+        ql_params = {
+            "alpha": 0.1, "gamma": gamma,
+            "epsilon": 1.0, "epsilon_min": 0.01, "epsilon_decay": 0.9999,
+        }
+        hist = _run_ql_game({TitForTat: 0.5, QLearningStrategy: 0.5},
+                            ql_params, num_turns)
+        turns_roll, coop_rate, window = _rolling_coop(hist)
+
+        if abs(gamma - 1/3) < 1e-5:
+            ax.plot(turns_roll, coop_rate, label="γ = 1/3 (Threshold)",
+                    color='black', lw=2, linestyle='--')
+        else:
+            ax.plot(turns_roll, coop_rate, label=f"γ = {gamma:.2f}",
+                    color=color, lw=1.5)
+
+    ax.set_title("Impact of Discount Factor (γ) on convergence against TitForTat (100K turns)")
+    ax.set_xlabel("Turn")
+    ax.set_ylabel(f"Cooperation rate (window={window})")
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
+    plt.savefig(output_path, dpi=150, bbox_inches="tight")
+    print(f"\nSaved {os.path.abspath(output_path)}")
+    plt.close(fig)
+
+
+# ─────────────────────────────────────────────
+# 6. Epsilon decay impact
+# ─────────────────────────────────────────────
+
+def plot_epsilon_decay(num_turns=None, output_path="epsilon_decay.png"):
+    if num_turns is None:
+        num_turns = default_params.NUM_TURNS
+
+    decays = [0.999, 0.9999, 0.99999]
+    colors = ['#E63946', '#2A9D8F', '#E9C46A']
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    window = None
+
+    for decay, color in zip(decays, colors):
+        print(f"\nRunning decay={decay}")
+        ql_params = {
+            "alpha": 0.1, "gamma": 0.9,
+            "epsilon": 1.0, "epsilon_min": 0.01, "epsilon_decay": decay,
+        }
+        hist = _run_ql_game({TitForTat: 0.5, QLearningStrategy: 0.5},
+                            ql_params, num_turns)
+        turns_roll, coop_rate, window = _rolling_coop(hist)
+        ax.plot(turns_roll, coop_rate, label=f"decay = {decay}", color=color, lw=1.5)
+
+    ax.set_title("Impact of Exploration Decay Rate (ε) on Cooperation against TitForTat")
+    ax.set_xlabel("Turn")
+    ax.set_ylabel(f"Cooperation rate (window={window})")
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
+    plt.savefig(output_path, dpi=150, bbox_inches="tight")
+    print(f"\nSaved {os.path.abspath(output_path)}")
+    plt.close(fig)
