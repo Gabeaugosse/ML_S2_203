@@ -349,11 +349,57 @@ We deduce that the Q-learning agent is able to learn the optimal strategy and th
 \section{Hyperparameter Sensitivity Analysis}
 \label{sec:hyperparams}
 
-\subsection{Impact of $\gamma$}
+The Q-learning agent updates its Q-table after each round via the Bellman equation:
+\[
+Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha\bigl[r_t + \gamma \max_{a'} Q(s_{t+1}, a') - Q(s_t, a_t)\bigr]
+\]
+\subsection{Impact of $\varepsilon$, exploration parameter}
 
-\subsection{Impact of $\alpha$}
+In a Q-learning framework, $\varepsilon$ controls the trade-off between exploration and exploitation.
+At each decision that the agent has to make, it will choose to explore with probability $\varepsilon$ and exploit with probability $1-\varepsilon$.
+Therefore, a high $\varepsilon$ means that the agent will try "new things", while a low $\varepsilon$ means that the agent will stick to what it knows.
+In this framework where we want to know if the agent is able to learn the optimal strategy, we need to make sure that the agent has enough time to explore the state space, while exploiting the best strategies it has found at a late stage. 
+Therefore, we choose to start with a high $\varepsilon$ and decrease it over time. \\
 
-\subsection{Impact of $\varepsilon$}
+Since the agent does not know anything at first, we need to start at \textbf{100\%} ($\varepsilon_0 = 0.0$ would be a random agent). For the lower bound, we want it to be small enough to ensure that the agent exploits the best strategies it has found at a late stage, while not being 0. The reason why is that it would get victimised too much against opponents like Joss who exploits static strategies.
+Lastly, we need to choose a decay rate. If it is too high, the agent might converge to a suboptimal strategy. If it is too low, the agent will still be exploring at the end of the game, which is not optimal. This parameter is related to the number of rounds (T=500,000) as we want it to be small after a certain number of rounds.  \\
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.70\textwidth]{epsilon_decay.png}
+  \caption{Slower decay allows for a longer exploration phase before locking into cooperation.}
+  \label{fig:epsilon_decay}
+\end{figure}
+
+For our simulation, we choose $\varepsilon_0 = 1.0$, $\varepsilon_{\min} = 0.01$ and $\varepsilon_{\text{decay}} = 0.9999$.
+
+\subsection{Impact of $\alpha$, learning rate}
+
+In Q-learning, $\alpha$ represents the learning rate, which controls how much newly acquired information overrides older information. 
+An $\alpha$ of $0$ would mean the agent learns nothing from its environment, whereas an $\alpha$ of $1$ would make the agent ignore all past experiences and only consider the most recent reward.
+Therefore, a high $\alpha$ allows the agent to update its beliefs very quickly, which can be useful in dynamic environments, while a low $\alpha$ ensures stable convergence but makes the learning process significantly slower. \\
+
+In the context of the Prisoner's Dilemma, setting an appropriate learning rate is important.
+If $\alpha$ is too high, the agent's Q-values will be overly sensitive to noise or stochastic opponent behaviors, leading to oscillating policies and preventing convergence.
+If $\alpha$ is too low, the agent will require an unrealistic number of rounds to reach the optimal strategy, exploring poorly before settling down.
+Thus, a moderate value strikes the right balance between rapid adaptation and Q-value stability. \\
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.70\textwidth]{alpha_impact_ttft.png}
+  \caption{Impact of the learning rate ($\alpha$) on the convergence against \texttt{TwoTitsForTat}.}
+  \label{fig:alpha_impact}
+\end{figure}
+
+Againsts TwoTitsForTat, which is a more punitive version of TitForTat, the agent converges to a lower cooperation rate with extreme values of $\alpha$. Against this strategy, cooperation is the optimal strategy, yet the agent struggles to converge to it with extreme values of $\alpha$.
+If $\alpha$ is too high, the agent will tend to forget the past quickly, and since TwoTitsForTat is punishing with a two turns delay, the agent will not be able to learn the optimal strategy (or be highly volatile as we see). Since the exploration decay is at play at the same time, the odds of converging to a suboptimal strategy not negligible. 
+The same way, if $\alpha$ is too low, the exploration rate being high at the beginning, the agent will not learn the optimal strategy against a highly punitive strategy before the exploration rate drops too low (as he will get punished a lot at the beginning). \\
+
+For our simulation, we choose a standard value of $\alpha = 0.1$, ensuring reliable convergence across all tested adversaries.
+
+\subsection{Impact of $\gamma$, discount factor}
+
+
 
 \section{Experimental Results}
 \label{sec:results}
