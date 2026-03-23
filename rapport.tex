@@ -428,11 +428,30 @@ For our simulation, we choose a high value of $\gamma = 0.9$, ensuring that the 
 \section{Experimental Results}
 \label{sec:results}
 
+Now that we have set the parameters of our Q-learning agent, and have seen the results against a set of different strategies, we obviously want to see if cooperation can emerge in a population of Q-learning agents without any prior knowledge. \\
+
 \subsection{Two Q-learning agents}
+\label{sec:two_ql_agents}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{convergence_2Q.png}
+  \caption{Evolution of the cooperation rate for two Q-learning agents playing against each other.}
+  \label{fig:convergence_2Q}
+\end{figure}
+
+This is by far the most encouraging result we have obtained so far. The two agents start by exploring their environment, and then they start to converge to mutual cooperation. This is impressive as it shows that cooperation can emerge in a population of Q-learning agents without any prior knowledge. \\
+
+Through the different simulations we have run, we have seen that the cooperation rate always converges to a value close to 1 (the noise we see after corresponds to the exploration rate of both agents that can interfer with the optimal strategy). 
+Another intresting thing to notice is that the two agents always tend to not cooperate at the beginning of the simulation. On Figure~\ref{fig:convergence_2Q}, we can see that the two agents start by betraying each other. Just like for other simulations, once the exploration rate drops, the agents start to converge to mutual cooperation. This can be explained that having a non zero exploration rate and discovering the temporary higher reward of betraying, the agents will tend to betray each other. However, once the exploration rate drops, the agents will sharply converge to mutual cooperation. \\
+
+In our setup, it is also interesting to see that the convergence toward the optimal strategy takes approximately the same time ($\approx 30000$ turns). It is not necessarily straightforward as we could think in a first place that it would be faster against a pre-programmed strategy. This result highlights the crucial role of the exploration rate in the convergence of the Q-learning agents. \\
 
 \subsection{Q-learning agents in a population of strategies}
+\label{sec:ql_agents_population}
 
 \subsection{Discussions}
+\label{sec:discussions}
 
 \section{Conclusion}
 \label{sec:conclusion}

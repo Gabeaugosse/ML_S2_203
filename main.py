@@ -29,7 +29,7 @@ def main() :
 
     # Here insert the strategy mix as a proportion of the total number of players
     strategy_mix = {
-    TitForTat:          0,
+    TitForTat:          0.5,
     TwoTitsForTat:      0,
     TitForTwoTats:      0,
     SuspiciousTitForTat: 0,
@@ -38,7 +38,7 @@ def main() :
     RandomAction:       0,
     Joss:               0,
     DiscriminatingAltruist: 0,
-    Bully:              0.5,
+    Bully:              0,
     ProbaCooperation:   0,
     
     QLearningStrategy: 0.5
