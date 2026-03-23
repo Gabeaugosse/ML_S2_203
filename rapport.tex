@@ -310,6 +310,13 @@ Notably, the exploitation rate is closely related to the opponent's cooperation 
 
 The conclusion of this first part is that cooperation cannot arise againt naive strategies : \textbf{defection must be punished and cooperation must be rewarded}.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{naive_coop.png}
+  \caption{Q-learning agent policy against naive strategies.}
+  \label{fig:naive_coop}
+\end{figure}
+
 \subsubsection{Reactive strategies}
  As we have seen in the previous section, cooperation cannot arise against naive strategies. However, it may arise against reactive strategies. This section shows how our agent behaves against reactive strategies.
 
@@ -336,9 +343,18 @@ The conclusion of this first part is that cooperation cannot arise againt naive 
 Analysing the results, we can see that DiscriminatingAltruist and Bully are the only strategies that do not lead to cooperation. From this, we can deduce that in order for cooperation to arise, the agent must be able to react both to defection and cooperation.
 These two fails as they tend to not be "forgiving" and "retaliating" enough. Here again, the agent converges to defection. \\
 
-When it comes for TitForTat and its variants, we can see that the Q-learning agent manages to cooperate with them. 
+When it comes for TitForTat and its variants, the Q-learning agent manages to cooperate with them. 
 The first interesting case is against TitForTwoTats : the agent manages to cooperate with it, but only 50\% of the time. 
-This is because TitForTwoTats is more forgiving than the others, we can see through the results that the agent understood its opponent strategy and exploited it by defecting as much as possible but not twice in a row (50\% of cooperation while getting victimised 0.7\% of the time). \\
+This strategy is more forgiving than the others, we can see through the results that the agent understood its opponent strategy and exploited it by defecting as much as possible but not twice in a row (50\% cooperation, 0.7\% victimised). \\
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{lenient_tft_coop.png}
+  \caption{Q-learning agent policy against lenient Tit-for-Tat strategies.}
+  \label{fig:lenient_tft_coop}
+\end{figure}
+
+Note that since our state space is limited to the last action of each player, the Q-learning agent defects as much as it can given each state. With a larger state space, we can make the assumption that the agent could be playing against even lenient strategies like TitForThreeTats or TitForFourTats ad exploit them with respectively 66\% and 75\% defection rate. \\
 
 Finally, we got the the strategies that applies the "Eye for an eye" rule. All those strategies lead to cooperation from the agent. This is conclusive with the theory, as it is intuitive that the agent should cooperate with strategies that cooperate with it, and defect it when it defects them (on the long run, you prefer to get 3 points every turn rather than 1).\\
 
